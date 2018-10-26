@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id" xmlns:tools="http://schemas.android.com/tools">
+  <string name="firebase_database_url" translatable="false">https://spacewing-38e84.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">20655245784</string>
+  <string name="google_storage_bucket" translatable="false">spacewing-38e84.appspot.com</string>
+  <string name="project_id" translatable="false">spacewing-38e84</string>
+  <string name="google_api_key" translatable="false">AIzaSyBDon1posqxk7KJZPkwS29RTMb1n4cySO0</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBDon1posqxk7KJZPkwS29RTMb1n4cySO0</string>
+  <string name="google_app_id" translatable="false">1:20655245784:android:1833e592b48bf089</string>
+  <string name="default_web_client_id" translatable="false">20655245784-65vso48n13hqe9ce7uh4hnh0o5dsg4a7.apps.googleusercontent.com</string>
+</resources>
