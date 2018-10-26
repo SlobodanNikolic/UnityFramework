@@ -27,4 +27,21 @@ public class FeatureTester : MonoBehaviour {
         App.fb.Login();
     }
 
+    public void ShowInterstitial(){
+        App.ads.ShowUnityAdsInterstitial();
+    }
+
+    public void ShowVideo()
+    {
+        App.ads.ShowUnityAdsSkippableVideo();
+    }
+
+    public void ShowRewarded(){
+        App.ads.ShowUnityAdsRewarded();
+    }
+
+    public void RewardPlayer(){
+        Debug.Log("Player rewarded");
+    }
+
 }
