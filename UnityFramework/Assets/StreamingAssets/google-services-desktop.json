@@ -1,42 +1,37 @@
 {
-  "project_info": {
-    "project_number": "20655245784",
-    "firebase_url": "https://spacewing-38e84.firebaseio.com",
-    "project_id": "spacewing-38e84",
-    "storage_bucket": "spacewing-38e84.appspot.com"
-  },
   "client": [
     {
+      "services": {
+        "appinvite_service": {
+          "status": 0
+        }, 
+        "analytics_service": {
+          "status": 0
+        }
+      }, 
+      "oauth_client": [
+        {
+          "client_id": "20655245784-7uo2pm3g8olieg065mbrgtqt6auqg552.apps.googleusercontent.com"
+        }
+      ], 
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLzjRjZPEwSQYHmOUXDXzPT__Khrt9fT8"
+        }
+      ], 
       "client_info": {
-        "mobilesdk_app_id": "1:20655245784:android:1833e592b48bf089",
+        "mobilesdk_app_id": "1:20655245784:ios:1833e592b48bf089", 
         "android_client_info": {
           "package_name": "com.makonda.spaceblaster"
         }
-      },
-      "oauth_client": [
-        {
-          "client_id": "20655245784-65vso48n13hqe9ce7uh4hnh0o5dsg4a7.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBDon1posqxk7KJZPkwS29RTMb1n4cySO0"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
-        }
       }
     }
-  ],
-  "configuration_version": "1"
+  ], 
+  "configuration_version": "1", 
+  "project_info": {
+    "storage_bucket": "spacewing-38e84.appspot.com", 
+    "project_id": "spacewing-38e84", 
+    "firebase_url": "https://spacewing-38e84.firebaseio.com", 
+    "project_number": "20655245784"
+  }
 }

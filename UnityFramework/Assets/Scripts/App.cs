@@ -9,6 +9,7 @@ public class App : MonoBehaviour {
     public static FirebaseControler firebase;
     public static UIControler ui;
     //public static Purchaser purchaser;
+    public static FacebookControler fb;
 
     void Awake()
     {
@@ -16,6 +17,7 @@ public class App : MonoBehaviour {
         localDB = GameObject.Find("LocalDBControler").GetComponent<LocalDBControler>();
         firebase = GameObject.Find("FirebaseControler").GetComponent<FirebaseControler>();
         ui = GameObject.Find("UIControler").GetComponent<UIControler>();
+        fb = GameObject.Find("FacebookControler").GetComponent<FacebookControler>();
         //purchaser = GameObject.Find("Purchaser").GetComponent<Purchaser>();
 
     }
