@@ -8,7 +8,7 @@ public class App : MonoBehaviour {
     public static LocalDBControler localDB;
     public static FirebaseControler firebase;
     public static UIControler ui;
-    //public static Purchaser purchaser;
+    public static Purchaser purchaser;
     public static FacebookControler fb;
     public static AdsControler ads;
 
@@ -20,7 +20,7 @@ public class App : MonoBehaviour {
         ui = GameObject.Find("UIControler").GetComponent<UIControler>();
         fb = GameObject.Find("FacebookControler").GetComponent<FacebookControler>();
         ads = GameObject.Find("AdsControler").GetComponent<AdsControler>();
-        //purchaser = GameObject.Find("Purchaser").GetComponent<Purchaser>();
+        purchaser = GameObject.Find("Purchaser").GetComponent<Purchaser>();
     }
 
     // Use this for initialization

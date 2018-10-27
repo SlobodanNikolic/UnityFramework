@@ -44,4 +44,20 @@ public class FeatureTester : MonoBehaviour {
         Debug.Log("Player rewarded");
     }
 
+    public void BuyConsumable(){
+        App.purchaser.BuyConsumableByIndex(0);
+    }
+
+    public void BuyNonConsumable(){
+        App.purchaser.BuyNonConsumableByIndex(0);
+    }
+
+    public void ConsumableBought(){
+        Debug.Log("Consumable bought succesfuly!");
+    }
+
+    public void NonConsumableBought()
+    {
+        Debug.Log("Ads removed succesfuly!");
+    }
 }
