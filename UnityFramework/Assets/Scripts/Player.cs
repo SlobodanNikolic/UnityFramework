@@ -11,7 +11,9 @@ public class Player{
     public string name;
     public string email;
     public string fbid;
-    public string ads;
+    public string gender;
+    public bool ads;
+    public bool sound;
 
     public Player()
     {

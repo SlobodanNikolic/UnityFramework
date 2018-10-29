@@ -4,6 +4,7 @@ using Firebase;
 using UnityEngine;
 using Firebase.Unity.Editor;
 using Firebase.Database;
+using Facebook;
 
 
 /// <summary>
@@ -50,8 +51,8 @@ public class FirebaseControler : MonoBehaviour {
         FirebaseApp.DefaultInstance.SetEditorP12Password("notasecret");
     }
 
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
 
        
     }
@@ -60,11 +61,11 @@ public class FirebaseControler : MonoBehaviour {
     /// <summary>
     /// Initializes Firebase. Sets callback methods
     /// </summary>
-	void InitializeFirebase() {
-	  auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
-	  auth.StateChanged += AuthStateChanged;
-	  AuthStateChanged(this, null);
-	}
+    void InitializeFirebase() {
+      auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+      auth.StateChanged += AuthStateChanged;
+      AuthStateChanged(this, null);
+    }
 
 
     /// <summary>
@@ -72,7 +73,7 @@ public class FirebaseControler : MonoBehaviour {
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="eventArgs">Event arguments.</param>
-	void AuthStateChanged(object sender, System.EventArgs eventArgs) {
+    void AuthStateChanged(object sender, System.EventArgs eventArgs) {
         Debug.Log("Checking Auth State");
         Debug.Log(auth.CurrentUser);
         Debug.Log(user);
@@ -83,25 +84,28 @@ public class FirebaseControler : MonoBehaviour {
             SignInAnonimously();
         }
 
-	    if (auth.CurrentUser != user) {
+        if (auth.CurrentUser != user) {
             Debug.Log("Current auth user: " + auth.CurrentUser);
             if(user !=null){
                 Debug.Log("Local user: " + user.UserId);
             }
 
             //TODO: ovo nesto ne valja
-	        bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
-    	    if (!signedIn && user != null) {
-    	      Debug.Log("Signed out " + user.UserId);
-    	    }
+            bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
+            if (!signedIn && user != null) {
+              Debug.Log("Signed out " + user.UserId);
+            }
 
-    	    user = auth.CurrentUser;
-    	    if (signedIn) {
-    	      Debug.Log("Signed in " + user.UserId);
-    	      
-    	    }
-	  }
-	}
+            user = auth.CurrentUser;
+            App.player.uid = user.UserId;
+            Debug.Log("Player uid : " + App.player.uid);
+
+            if (signedIn) {
+              Debug.Log("Signed in " + user.UserId);
+                Load();
+            }
+      }
+    }
 
     /// <summary>
     /// Signs the user anonimously. Ads a user to firebase auth users table, with a new id.
@@ -128,6 +132,8 @@ public class FirebaseControler : MonoBehaviour {
                     user = task.Result;
                     App.player.uid = user.UserId;
                     Debug.Log("Signing in anonimously: Completed. UID: " + App.player.uid);
+                    //CreateNewDBUser();
+                    //Samo treba u Auth state changed zvati load, koji ako nema tog korisnika, pravi novog u bazi
                 }
 
             });
@@ -159,14 +165,14 @@ public class FirebaseControler : MonoBehaviour {
     /// The play services version must be up to date, so the Firebase features could work.
     /// This function checks the play services version.
     /// </summary>
-	public void CheckPlayServicesVersion(){
+    public void CheckPlayServicesVersion(){
 
-		Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
-		  var dependencyStatus = task.Result;
-		  if (dependencyStatus == Firebase.DependencyStatus.Available) {
+        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
+          var dependencyStatus = task.Result;
+          if (dependencyStatus == Firebase.DependencyStatus.Available) {
 
-		    // Create and hold a reference to your FirebaseApp, i.e.
-		        app = Firebase.FirebaseApp.DefaultInstance;
+            // Create and hold a reference to your FirebaseApp, i.e.
+                app = Firebase.FirebaseApp.DefaultInstance;
                 firebaseReady = true;
 
                 // where app is a Firebase.FirebaseApp property of your application class.
@@ -178,16 +184,16 @@ public class FirebaseControler : MonoBehaviour {
 #endif
                 // Get the root reference location of the database.
                 dbReference = FirebaseDatabase.DefaultInstance.RootReference;
-                Debug.Log(dbReference);
+                Debug.Log("Firebase dbReference: " + dbReference);
             }
             else {
-		    UnityEngine.Debug.LogError(System.String.Format(
-		      "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
+            UnityEngine.Debug.LogError(System.String.Format(
+              "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
                 // Firebase Unity SDK is not safe to use here.
                 firebaseReady = false;
-		  }
-		});
-	}
+          }
+        });
+    }
 
     /// <summary>
     /// Save this users data. Make a json object from the Player class, and save it to the 
@@ -196,18 +202,24 @@ public class FirebaseControler : MonoBehaviour {
     /// </summary>
     public void Save()
     {
-        string json = JsonUtility.ToJson(App.player);
-        dbReference.Child("users").Child(App.player.uid).SetRawJsonValueAsync(json)
-           .ContinueWith(task => {
-               if (task.IsFaulted)
+        if (App.player != null)
+        {
+            Debug.Log("Save function. Uid : " + App.player.uid);
+            string json = JsonUtility.ToJson(App.player);
+            dbReference.Child("users").Child(App.player.uid).SetRawJsonValueAsync(json)
+               .ContinueWith(task =>
                {
-                   Debug.Log("Database write error");
-               }
-               else if (task.IsCompleted)
-               {
-                   Debug.Log("Database write success");
-               }
-           }); ;
+                   if (task.IsFaulted)
+                   {
+                       Debug.Log("Database write error");
+                   }
+                   else if (task.IsCompleted)
+                   {
+                       Debug.Log("Database write success");
+                       App.localDB.Save();
+                   }
+               });
+        }
     }
 
     /// <summary>
@@ -215,23 +227,169 @@ public class FirebaseControler : MonoBehaviour {
     /// </summary>
     public void Load()
     {
-        FirebaseDatabase.DefaultInstance.GetReference("users")
+        if (App.player != null)
+        {
+            Debug.Log("Firebase load. Player uid : " + App.player.uid);
+            FirebaseDatabase.DefaultInstance.GetReference("users")
+                .Child(App.player.uid)
+                .GetValueAsync().ContinueWith(task =>
+                {
+                    if (task.IsFaulted)
+                    {
+                        Debug.Log("Database load error");
+                    }
+                    else if (task.IsCompleted)
+                    {
+                        Debug.Log("Database load success");
+                        DataSnapshot snapshot = task.Result;
+
+                        if (!snapshot.Exists)
+                        {
+                            Debug.Log("No user with uid " + App.player.uid);
+                            string json = JsonUtility.ToJson(App.player);
+                            dbReference.Child("users").Child(App.player.uid).SetRawJsonValueAsync(json)
+                               .ContinueWith(task2 =>
+                               {
+                                   if (task2.IsFaulted)
+                                   {
+                                       Debug.Log("Creating new user - Database write error");
+                                   }
+                                   else if (task2.IsCompleted)
+                                   {
+                                       Debug.Log("Creating new user - Database write success");
+                                       App.localDB.Save();
+                                   }
+                               });
+                        }
+                        else
+                        {
+                            Debug.Log("Name : " + snapshot.Child("name").Value.ToString());
+                            App.player.name = snapshot.Child("name").Value.ToString();
+                            App.player.email = snapshot.Child("email").ToString();
+                            App.player.fbid = snapshot.Child("fbid").ToString();
+                            App.player.uid = snapshot.Child("uid").ToString();
+                            App.localDB.Save();
+                        }
+                    }
+                });
+        }
+    }
+
+    public void CreateNewDBUser(){
+        Debug.Log("Create new DB user");
+        if (App.player != null)
+        {
+
+            FirebaseDatabase.DefaultInstance.GetReference("users")
             .Child(App.player.uid)
             .GetValueAsync().ContinueWith(task => {
                 if (task.IsFaulted)
                 {
-                    Debug.Log("Database load error");
+                    Debug.Log("Checking if user already exists - Database load error");
                 }
                 else if (task.IsCompleted)
                 {
-                    Debug.Log("Database load success");
+                    Debug.Log("Checking if user already exists - Database load success");
                     DataSnapshot snapshot = task.Result;
-                    App.player.name = snapshot.Child("name").ToString();
-                    App.player.email = snapshot.Child("email").ToString();
-                    App.player.fbid = snapshot.Child("fbid").ToString();
-                    App.player.uid = snapshot.Child("uid").ToString();
+
+                    if (!snapshot.Exists)
+                    {
+
+                        Debug.Log("No user with uid " + App.player.uid);
+                        string json = JsonUtility.ToJson(App.player);
+                        dbReference.Child("users").Child(App.player.uid).SetRawJsonValueAsync(json)
+                           .ContinueWith(task2 =>
+                           {
+                               if (task2.IsFaulted)
+                               {
+                                   Debug.Log("Creating new user - Database write error");
+                               }
+                               else if (task2.IsCompleted)
+                               {
+                                   Debug.Log("Creating new user - Database write success");
+                                   App.localDB.Save();
+                               }
+                           });
+                    }
+                    else
+                    {
+                        Debug.Log("User already exists, no need to create new.");
+                        App.player.name = snapshot.Child("name").Value.ToString();
+                        App.player.email = snapshot.Child("email").ToString();
+                        App.player.fbid = snapshot.Child("fbid").ToString();
+                        App.player.uid = snapshot.Child("uid").ToString();
+                        App.localDB.Save();
+                    }
                 }
             });
+
+
+        }
+    }
+
+    public void SignInWithFacebook(string accessToken){
+
+        Firebase.Auth.Credential credential =
+        Firebase.Auth.FacebookAuthProvider.GetCredential(accessToken);
+        auth.SignInWithCredentialAsync(credential).ContinueWith(task => {
+            if (task.IsCanceled)
+            {
+                Debug.LogError("SignInWithCredentialAsync was canceled.");
+                return;
+            }
+            if (task.IsFaulted)
+            {
+                Debug.LogError("SignInWithCredentialAsync encountered an error: " + task.Exception);
+                return;
+            }
+
+            Firebase.Auth.FirebaseUser newUser = task.Result;
+            Debug.LogFormat("User signed in successfully: {0} ({1})",
+                newUser.DisplayName, newUser.UserId);
+
+            user = newUser;
+            App.player.uid = user.UserId;
+            //Save();
+            //Ovde ne treba save, nego load
+            Load();
+        });
+    }
+
+    public void ConnectWithFacebook(Facebook.Unity.AccessToken accessToken){
+
+        Firebase.Auth.Credential credential =
+                    Firebase.Auth.FacebookAuthProvider.GetCredential(accessToken.TokenString);
+
+        auth.CurrentUser.LinkWithCredentialAsync(credential).ContinueWith(task => {
+            if (task.IsCanceled)
+            {
+                Debug.LogError("LinkWithCredentialAsync was canceled.");
+                return;
+            }
+            if (task.IsFaulted)
+            {
+                //Nalog je vec linkovan
+                //Treba ucitati podatke tog usera
+                Debug.LogError("LinkWithCredentialAsync encountered an error: " + task.Exception);
+                SignInWithFacebook(accessToken.TokenString);
+                return;
+            }
+
+            Firebase.Auth.FirebaseUser newUser = task.Result;
+            Debug.LogFormat("Credentials successfully linked to Firebase user: {0} ({1})",
+                newUser.DisplayName, newUser.UserId);
+
+            Debug.Log("Old user id : " + user.UserId);
+            Debug.Log("New user id : " + newUser.UserId);
+
+            //newUser ostaje isti ako se uspesno linkuje
+            user = newUser;
+            App.player.uid = user.UserId;
+            App.player.fbid = accessToken.UserId;
+            Debug.Log("Player fbid : " + App.player.fbid);
+            Save();
+
+        });
     }
 
 

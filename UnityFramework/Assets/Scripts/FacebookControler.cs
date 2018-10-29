@@ -55,7 +55,7 @@ public class FacebookControler : MonoBehaviour {
     public void Login(){
         Debug.Log("Facebook login clicked");
 
-        var perms = new List<string>() { "public_profile", "email" };
+        var perms = new List<string>() { "public_profile", "email", "user_friends" };
         FB.LogInWithReadPermissions(perms, AuthCallback);
 
     }
@@ -70,6 +70,9 @@ public class FacebookControler : MonoBehaviour {
             var aToken = Facebook.Unity.AccessToken.CurrentAccessToken;
             // Print current access token's User ID
             Debug.Log(aToken.UserId);
+
+            CheckFbid(aToken);
+
             // Print current access token's granted permissions
             foreach (string perm in aToken.Permissions)
             {
@@ -80,6 +83,61 @@ public class FacebookControler : MonoBehaviour {
         {
             Debug.Log("User cancelled login");
         }
+    }
+
+    public void CheckFbid(AccessToken token){
+        string localFbid = PlayerPrefs.GetString("fbid", "");
+        //if(localFbid == ""){
+        //    //Nema fbid u player prefs
+        //    //Napravi novog usera sa sign in with credentials, proveri da li postoji fbid u bazi
+        //    //Ako postoji, ucitaj podatke sa njega
+        //    //Ako ne postoji, napravi novog usera u bazi i ubaci fbid u podatke
+
+        //}
+        //else{
+        //    if(localFbid == token.UserId){
+        //        //To je isti user koji postoji u lokalu, samo ucitaj podatke iz zapisa sa tim fbid
+
+        //    }
+        //    else{
+        //        //Ako je razlicit facebook, 
+        //    }
+        //    App.player.fbid = token.UserId;
+        //    FB.API("/me?fields=id,first_name,last_name,gender,email", HttpMethod.GET, GraphCallback);
+        //    App.firebase.ConnectWithFacebook(token.TokenString);
+        //}
+        App.firebase.ConnectWithFacebook(token);
+    }
+
+    private void GraphCallback(IGraphResult result)
+    {
+        Debug.Log("Facebook info callback : " + result.RawResult);
+        string id;
+        string firstname;
+        string lastname;
+        string gender;
+        string email;
+        App.player.name = "";
+        App.player.gender = "";
+
+        if (result.ResultDictionary.TryGetValue("first_name", out firstname))
+        {
+            App.player.name += firstname;
+        }
+        if (result.ResultDictionary.TryGetValue("last_name", out lastname))
+        {
+            App.player.name += " " + lastname;
+        }
+        if (result.ResultDictionary.TryGetValue("gender", out gender))
+        {
+            App.player.gender = gender.ToString();
+        }
+        if (result.ResultDictionary.TryGetValue("email", out email))
+        {
+            App.player.email = email.ToString();
+        }
+
+        App.firebase.Save();
     }
 
 

@@ -246,8 +246,8 @@ PlayerSettings:
   AndroidTargetArchitectures: 5
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: /Users/boca/unityFramework.keystore
-  AndroidKeyaliasName: unityframeworkkeystore
+  AndroidKeystoreName: /Users/boca/frameworkKeystore.keystore
+  AndroidKeyaliasName: frameworkkey
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 1
   AndroidIsGame: 1
