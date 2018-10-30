@@ -95,4 +95,8 @@ public class FeatureTester : MonoBehaviour
         App.score.SetAndSaveBestScore();
     }
 
+    public void Share(){
+        App.social.ShareScreenshot("Great game!", "Gotta play this one, try it! " + "https://www.makonda.com");
+    }
+
 }

@@ -34,6 +34,7 @@ public class FirebaseControler : MonoBehaviour {
     /// </summary>
     public string editorServiceAccountEmail;
     public string editorP12Password;
+    public bool signedInAnonimously;
 
     // Use this for initialization
     void Start () {
@@ -80,7 +81,8 @@ public class FirebaseControler : MonoBehaviour {
 
         //TODO: dodati mozda proveru da li postoji uid u player prefs?
         //odnosno fbid ili mail (uid) i pass (auto)
-        if(auth.CurrentUser == null){
+        if(auth.CurrentUser == null && !signedInAnonimously){
+            signedInAnonimously = true;
             SignInAnonimously();
         }
 
