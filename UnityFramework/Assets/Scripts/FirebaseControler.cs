@@ -263,11 +263,11 @@ public class FirebaseControler : MonoBehaviour {
                         }
                         else
                         {
-                            Debug.Log("Name : " + snapshot.Child("name").Value.ToString());
+                            Debug.Log("Uid from Load : " + snapshot.Child("uid").Value.ToString());
                             App.player.name = snapshot.Child("name").Value.ToString();
-                            App.player.email = snapshot.Child("email").ToString();
-                            App.player.fbid = snapshot.Child("fbid").ToString();
-                            App.player.uid = snapshot.Child("uid").ToString();
+                            App.player.email = snapshot.Child("email").Value.ToString();
+                            App.player.fbid = snapshot.Child("fbid").Value.ToString();
+                            App.player.uid = snapshot.Child("uid").Value.ToString();
                             App.localDB.Save();
                         }
                     }

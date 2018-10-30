@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pokega;
 
 public class App : MonoBehaviour {
 
@@ -11,6 +12,8 @@ public class App : MonoBehaviour {
     public static Purchaser purchaser;
     public static FacebookControler fb;
     public static AdsControler ads;
+    public static SocialControl social;
+    public static ScoreControl score;
 
     void Awake()
     {
@@ -21,6 +24,8 @@ public class App : MonoBehaviour {
         fb = GameObject.Find("FacebookControler").GetComponent<FacebookControler>();
         ads = GameObject.Find("AdsControler").GetComponent<AdsControler>();
         purchaser = GameObject.Find("Purchaser").GetComponent<Purchaser>();
+        social = GameObject.Find("SocialControler").GetComponent<SocialControl>();
+        score = GameObject.Find("ScoreControler").GetComponent<ScoreControl>();
     }
 
     // Use this for initialization
@@ -31,29 +36,6 @@ public class App : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (Input.GetKeyUp(KeyCode.S))
-        {
-            firebase.Save();
-        }
-
-        if (Input.GetKeyUp(KeyCode.L))
-        {
-            firebase.Load();
-        }
-
-        if (Input.GetKeyUp(KeyCode.G))
-        {
-            ui.SetScreen("UIGame");
-        }
-
-        if (Input.GetKeyUp(KeyCode.Q))
-        {
-            ui.SetPopUp("UIShop");
-        }
-
-        if (Input.GetKeyUp(KeyCode.W))
-        {
-            ui.SetPopUp("UIShop", false);
-        }
+     
     }
 }
