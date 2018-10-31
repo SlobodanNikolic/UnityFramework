@@ -49,13 +49,16 @@ namespace Pokega{
                     AddBestScoreToPlayer(bestScores[i].scoreName, bestScores[i].score);
 				}
 			}
-            //OVDE TREBA PRVO DA SE POSALJU SKOROVI LOCAL DB-u i SERVER API-ju
             //todo: Save na server i lokal
             App.firebase.Save();
 		}
 
 
-
+        /// <summary>
+        /// Pomocna funkcija koja dodaje skor pod imenom scoreName i vrednosti score, 
+        /// player objektu. Pri pamcenju skorova na server, pre toga ih updateujemo 
+        /// na player objektu.
+        /// </summary>
         public void AddBestScoreToPlayer(string scoreName, string score){
             bool inserted = false;
             for (int i = 0; i < App.player.bestScoreNames.Count; i++){
@@ -71,8 +74,12 @@ namespace Pokega{
             }
         }
 
-		//Postavljanje vrednosti skora u odgovarajuce labele
-		public void SetScoreLabels(){
+        //Postavljanje vrednosti skora u odgovarajuce labele
+        /// <summary>
+        /// Ova funkcija treba da se zove svaki put kada se poveca skor u igri, kako bi se
+        /// sve labele apdejtovale i prikazivale odgovarajuci skor
+        /// </summary>
+        public void SetScoreLabels(){
 			foreach(Score sc in scores){
 				foreach(Text labela in sc.scoreLabels){
 					labela.text = GetScore(sc.scoreName).ToString();
@@ -80,8 +87,12 @@ namespace Pokega{
 			}
 		}
 
-        //Postavljanje vrednosti najboljih skorova u odgovarajuce labele
 
+        //Postavljanje vrednosti najboljih skorova u odgovarajuce labele
+        /// <summary>
+        /// Ova funkcija se zove npr. u game overu, kako bi se apdejtovale
+        /// labele sa najboljim skorovima.
+        /// </summary>
         public void SetBestScoreLabels()
         {
             foreach (Score sc in bestScores)
@@ -94,7 +105,10 @@ namespace Pokega{
         }
 
 
-		public void ScorePlus(int amount, string name){
+        /// <summary>
+        /// Funkcija dodaje amount vrednost na skor pod imenom name
+        /// </summary>
+        public void ScorePlus(int amount, string name){
 			
 			for(int i=0; i<scores.Count; i++){
 				if(scores[i].scoreName.CompareTo(name)==0){
@@ -154,6 +168,11 @@ namespace Pokega{
 			}
 		}
 
+        /// <summary>
+        /// Funkcija koja upisuje najbolje skorove ucitane sa servera u ScoreControler.
+        /// Kada ucitamo najbolje skorove sa servera, upisujemo ih u ScoreControler, jer tu 
+        /// manipulisemo njima i podaci moraju da budu apdejtovani.
+        /// </summary>
         public void SetBestScoresFromFirebase(List<string> bestScoreNames, List<string> bestScoreValues){
             for (int i = 0; i < bestScoreNames.Count; i++){
                 for (int j = 0; i < bestScores.Count; j++){
@@ -164,6 +183,11 @@ namespace Pokega{
             }
         }
 
+        /// <summary>
+        /// Ovu funkciju zovemo na kraju svake partije, kako bismo najbolji skor upisali u
+        /// leaderboardove na google play i game center. Ova funkcija se moze zvati bilo kada,
+        /// cak i kada skor nije najbolji, jer ce se na GP i GC preracunati da li je bolji od postojeceg
+        /// </summary>
         public void ReportScore(int score, string leaderboardID)
         {
             Debug.Log("Reporting score " + (long)score + " on leaderboard " + leaderboardID);

@@ -13,7 +13,13 @@ public class LocalDBControler : MonoBehaviour {
     public string fbid;
     public string ads;
     public int timesPlayed;
+    /// <summary>
+    /// Imena skorova (onih za koje su neki rezultati ostvareni)
+    /// </summary>
     public List<string> bestScoreNames;
+    /// <summary>
+    /// Vrednosti skorova, za imena iz niza iznad (mirror image)
+    /// </summary>
     public List<string> bestScoreValues;
 
     // Use this for initialization
@@ -25,6 +31,9 @@ public class LocalDBControler : MonoBehaviour {
 		
 	}
 
+    /// <summary>
+    /// Pisemo u Player Prefs sve podatke iz plejera
+    /// </summary>
     public void Save(){
         PlayerPrefs.SetString("uid", App.player.uid);
         PlayerPrefs.SetString("name", App.player.name);
@@ -39,6 +48,9 @@ public class LocalDBControler : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// Ucitavamo iz Player Prefs-a sve vrednosti u lokalne promenljive
+    /// </summary>
     public void Load(){
         uid = PlayerPrefs.GetString("uid", "");
         name = PlayerPrefs.GetString("name", "");

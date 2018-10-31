@@ -6,9 +6,10 @@ using Firebase.Unity.Editor;
 using Firebase.Database;
 using Facebook;
 
+
 /// <summary>
-/// Controler class that encompasses all Firebase functionality,
-/// such as database, storage, push notifications
+/// Kontroler klasa koja radi sa pamcenjem i uzimanjem podataka sa servera,
+/// autentifikacijom korisnika, login, logout.
 /// </summary>
 public class FirebaseControler : MonoBehaviour {
 
@@ -37,12 +38,17 @@ public class FirebaseControler : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        /// <summary>
+        /// Provera verzije play servisa na android uredjajima, jer je novija verzija potrebna za rad sa Firebaseom
+        /// </summary>
         CheckPlayServicesVersion();
 
     }
 
+
     /// <summary>
-    /// Sets the editor auth values. Needed for login and auth in editor mode.
+    /// Postavljaju se vrednosti potrebne za koriscenje Firebase-a u Editoru.
+    /// Adresa baze, ime .p12 fajla i sifra za isti
     /// </summary>
     public void SetEditorAuthValues(){
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://spacewing-38e84.firebaseio.com/");
@@ -57,9 +63,8 @@ public class FirebaseControler : MonoBehaviour {
        
     }
 
-
     /// <summary>
-    /// Initializes Firebase. Sets callback methods
+    /// Inicijalizacija firebasea i dodeljivanje kolbekova
     /// </summary>
     void InitializeFirebase() {
       auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
@@ -69,10 +74,13 @@ public class FirebaseControler : MonoBehaviour {
 
 
     /// <summary>
-    /// Called when auth state changes (user login, logout)
+    /// Ova funkcija se zove svaki put kada se promeni stanje autentifikacije.
+    /// Pri prvom pokretanju na uredjaju, poziva se ova funkcija i vidi se da je 
+    /// trenutno logovani auth.CurrentUser == null, kao i user kojeg smo mi deklarisali (pomocna promenljiva)
+    /// Nakon toga se poziva anonimna autentifikacija i nakon uspesne autentifikacije, ponovo se aktivira ovaj kolbek,
+    /// samo sto ovog puta auth.CurrentUser != null. Ovaj kolbek se poziva nakon svakog logina ili logouta.
     /// </summary>
-    /// <param name="sender">Sender.</param>
-    /// <param name="eventArgs">Event arguments.</param>
+  
     void AuthStateChanged(object sender, System.EventArgs eventArgs) {
         Debug.Log("Checking Auth State");
         Debug.Log(auth.CurrentUser);
@@ -80,11 +88,17 @@ public class FirebaseControler : MonoBehaviour {
 
         //TODO: dodati mozda proveru da li postoji uid u player prefs?
         //odnosno fbid ili mail (uid) i pass (auto)
-        if(auth.CurrentUser == null && !signedInAnonimously){
+        /// <summary>
+        /// Ako je prvo pokretanje na uredjaju
+        /// </summary>
+        if (auth.CurrentUser == null && !signedInAnonimously){
             signedInAnonimously = true;
             SignInAnonimously();
         }
 
+        /// <summary>
+        /// Ovde se uvek ulazi na pocetku, osim kad je prvo pokretanje i oba su null
+        /// </summary>
         if (auth.CurrentUser != user) {
             Debug.Log("Current auth user: " + auth.CurrentUser);
             if(user !=null){
@@ -109,7 +123,9 @@ public class FirebaseControler : MonoBehaviour {
     }
 
     /// <summary>
-    /// Signs the user anonimously. Ads a user to firebase auth users table, with a new id.
+    /// Ako je prvi pot pokrenuta igra na uredjaju, korisnik se loguje anonimno,
+    /// dobija neki id i svaki sledeci put ce imati taj id. Anonimni login se samo jednom desi na uredjaju,
+    /// samo pri prvom pokretanju.
     /// </summary>
     public void SignInAnonimously(){
         Debug.Log("Signing in anonimously.");
@@ -141,6 +157,9 @@ public class FirebaseControler : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Ukoliko zelimo da apdejtujemo email za nekog korisnika, treba to uraditi koriscenjem ove funkcije
+    /// </summary>
     public void UpdateUsersEmail(string email){
         Firebase.Auth.FirebaseUser user = auth.CurrentUser;
         if (user != null)
@@ -200,6 +219,7 @@ public class FirebaseControler : MonoBehaviour {
     /// Save this users data. Make a json object from the Player class, and save it to the 
     /// users table, under his uid from the auth table.
     /// 
+    /// 
     /// </summary>
     public void Save()
     {
@@ -207,6 +227,10 @@ public class FirebaseControler : MonoBehaviour {
         {
             Debug.Log("Save function. Uid : " + App.player.uid);
 
+            /// <summary>
+            /// Player objekat iz App se prebacuje u JSON i kao takav se pamti u bazi,
+            /// u kolekciji users, pod id-jem autentifikovanog igraca.
+            /// </summary>
             string json = JsonUtility.ToJson(App.player);
             Debug.Log(json);
             dbReference.Child("users").Child(App.player.uid).SetRawJsonValueAsync(json)
@@ -219,6 +243,9 @@ public class FirebaseControler : MonoBehaviour {
                    else if (task.IsCompleted)
                    {
                        Debug.Log("Database write success");
+                       /// <summary>
+                       /// Pamtimo sve iz App.player objekta u Player Prefs, takodje
+                       /// </summary>
                        App.localDB.Save();
                    }
                });
@@ -233,10 +260,17 @@ public class FirebaseControler : MonoBehaviour {
         if (App.player != null)
         {
             Debug.Log("Firebase load. Player uid : " + App.player.uid);
+
+            /// <summary>
+            /// Trazimo igraca po user id-ju u bazi
+            /// </summary>
             FirebaseDatabase.DefaultInstance.GetReference("users")
                 .Child(App.player.uid)
                 .GetValueAsync().ContinueWith(task =>
                 {
+                    /// <summary>
+                    /// Ovo se poziva samo u slucaju greske, ne i kada nema trazenog korisnika
+                    /// </summary>
                     if (task.IsFaulted)
                     {
                         Debug.Log("Database load error");
@@ -246,10 +280,16 @@ public class FirebaseControler : MonoBehaviour {
                         Debug.Log("Database load success");
                         DataSnapshot snapshot = task.Result;
 
+                        /// <summary>
+                        /// Ako korisnik sa ovim id-jem ne postoji
+                        /// </summary>
                         if (!snapshot.Exists)
                         {
                             Debug.Log("No user with uid " + App.player.uid);
                             string json = JsonUtility.ToJson(App.player);
+                            /// <summary>
+                            /// Napravi korisnika sa tim id-jem
+                            /// </summary>
                             dbReference.Child("users").Child(App.player.uid).SetRawJsonValueAsync(json)
                                .ContinueWith(task2 =>
                                {
@@ -267,6 +307,9 @@ public class FirebaseControler : MonoBehaviour {
                         else
                         {
 
+                            /// <summary>
+                            /// Ako postoji korisnik sa tim id-jem, ucitaj podatke sa servera u player objekat
+                            /// </summary>
                             Debug.Log("Uid from Load : " + snapshot.Child("uid").Value.ToString());
                             Debug.Log(snapshot.HasChild("bestScoreNames"));
                             Debug.Log(snapshot.Child("bestScoreNames").Value.ToString());
@@ -280,10 +323,18 @@ public class FirebaseControler : MonoBehaviour {
                             Debug.Log(snapshot.Child("bestScoreNames").Value.ToString());
                             Debug.Log(snapshot.Child("bestScoreValues").Value.ToString());
 
+                            /// <summary>
+                            /// Best scores se loaduju u player objekat
+                            /// </summary>
                             App.player.bestScoreNames = ListObjToString(snapshot.Child("bestScoreNames").Value as List<System.Object>);
                             App.player.bestScoreValues = ListObjToString(snapshot.Child("bestScoreValues").Value as List<System.Object>);
 
+                            /// <summary>
+                            /// Best scores treba loadovati i u ScoreControler, jer se odatle citaju trenutne vrenosti 
+                        /// i vrse operacije sa skorom.
+                            /// </summary>
                             App.score.SetBestScoresFromFirebase(App.player.bestScoreNames, App.player.bestScoreValues);
+
                             App.localDB.Save();
                         }
                     }
@@ -291,6 +342,10 @@ public class FirebaseControler : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Funkcija koja prebacuje Listu objekata tipa Object u Listu stringova.
+    /// Potrebna nam je jer listu skorova Firebase vraca kao listu objekata, a ne stringova, sto bi dovelo do greske
+    /// </summary>
     public List<string> ListObjToString(List<System.Object> list){
         List<string> stringList = new List<string>();
         foreach(System.Object obj in list){
@@ -299,11 +354,18 @@ public class FirebaseControler : MonoBehaviour {
         return stringList;
     }
 
+    /// <summary>
+    /// Kreira se novi user u bazi, pod id-jem koji dobijemo iz auth.CurrentUser objekta.
+    /// Ovo se poziva samo prilikom prvog logina na uredjaju.
+    /// </summary>
     public void CreateNewDBUser(){
         Debug.Log("Create new DB user");
         if (App.player != null)
         {
 
+            /// <summary>
+            /// Za svaki slucaj proveravamo da li korisnik vec postoji
+            /// </summary>
             FirebaseDatabase.DefaultInstance.GetReference("users")
             .Child(App.player.uid)
             .GetValueAsync().ContinueWith(task => {
@@ -316,6 +378,9 @@ public class FirebaseControler : MonoBehaviour {
                     Debug.Log("Checking if user already exists - Database load success");
                     DataSnapshot snapshot = task.Result;
 
+                    /// <summary>
+                    /// Ako ne postoji, pravimo novog korisnika
+                    /// </summary>
                     if (!snapshot.Exists)
                     {
 
@@ -337,6 +402,9 @@ public class FirebaseControler : MonoBehaviour {
                     }
                     else
                     {
+                        /// <summary>
+                        /// Ako korisnik vec postoji, loadujemo ga sa servera.
+                        /// </summary>
                         Debug.Log("User already exists, no need to create new.");
                         App.player.name = snapshot.Child("name").Value.ToString();
                         App.player.email = snapshot.Child("email").ToString();
@@ -351,6 +419,10 @@ public class FirebaseControler : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Ova funkcija se zove kada se proba linkovanje trenutnog naloga sa fejsbukom(klikom na dugme), a neki drugi nalog je vec linkovan sa
+    /// istim fb id-jem. Onda se poziva ova funkcija, gde se ucitavaju podaci korisnika koji je vec linkovan od ranije.
+    /// </summary>
     public void SignInWithFacebook(string accessToken){
 
         Firebase.Auth.Credential credential =
@@ -375,15 +447,27 @@ public class FirebaseControler : MonoBehaviour {
             App.player.uid = user.UserId;
             //Save();
             //Ovde ne treba save, nego load
+            /// <summary>
+            /// Ucitavamo podatke tog korisnika koji je linkovan sa zadatim fb id-jem
+            /// </summary>
             Load();
         });
     }
+
+    /// <summary>
+    /// Funkcija koja linkuje facebook nalog (fb id) sa korisnickim nalogom na Firebase-u
+    /// Uz anonimnog korisnika se dodaju novi kredencijali (fb) i svako sledece pozivanje ove funkcije nece uspeti
+    /// jer je fbid vec linkovan.
+    /// </summary>
 
     public void ConnectWithFacebook(Facebook.Unity.AccessToken accessToken){
 
         Firebase.Auth.Credential credential =
                     Firebase.Auth.FacebookAuthProvider.GetCredential(accessToken.TokenString);
 
+        /// <summary>
+        /// Pokusava se linkovanje sa fejsbukom
+        /// </summary>
         auth.CurrentUser.LinkWithCredentialAsync(credential).ContinueWith(task => {
             if (task.IsCanceled)
             {
@@ -399,6 +483,9 @@ public class FirebaseControler : MonoBehaviour {
                 return;
             }
 
+            /// <summary>
+            /// Uspelo je linkovanje
+            /// </summary>
             Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("Credentials successfully linked to Firebase user: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
@@ -411,11 +498,18 @@ public class FirebaseControler : MonoBehaviour {
             App.player.uid = user.UserId;
             App.player.fbid = accessToken.UserId;
             Debug.Log("Player fbid : " + App.player.fbid);
+
+            /// <summary>
+            /// Pamtimo stare podatke sa novim id-jem na server
+            /// </summary>
             Save();
 
         });
     }
 
+    /// <summary>
+    /// Koristiti ovu funkciju ukoliko zelimo da izlogujemo korisnika
+    /// </summary>
     public void LogOut(){
         auth.SignOut();
     }

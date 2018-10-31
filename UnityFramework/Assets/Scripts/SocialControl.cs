@@ -5,6 +5,10 @@ using Pokega;
 using UnityEngine.SocialPlatforms;
 using System.IO;
 
+/// <summary>
+/// Kontroler koji je zaduzen za Google Play i Game Center Achievements, Leaderboards,
+/// kao i za Native Share funkcionalnost.
+/// </summary>
 public class SocialControl : MonoBehaviour {
 
     public bool gameCenterAuthenticated;
@@ -45,6 +49,9 @@ public class SocialControl : MonoBehaviour {
             Debug.Log("Got " + achievements.Length + " achievements");
     }
 
+    /// <summary>
+    /// Funkcija koja postavlja achievement sa id-jem achievementId na GP i GC
+    /// </summary>
     public void SetAchievement(string achievementId)
     {
 
@@ -56,23 +63,34 @@ public class SocialControl : MonoBehaviour {
                 Debug.Log("Failed to report achievement");
         });
     }
-    
 
+
+    /// <summary>
+    /// Funkcija za prikazivanje leaderboarda
+    /// </summary>
     public void ShowLeaderboards()
     {
         Social.ShowLeaderboardUI();
     }
 
+    /// <summary>
+    /// Funkcija za prikazivanje achievementa
+    /// </summary>
     public void ShowAchievements()
     {
         Social.ShowAchievementsUI();
     }
 
-
+    /// <summary>
+    /// Funkcija koja pokrece korutinu pomocu koje se shareuje screenshot sa odgovarajucom porukom
+    /// </summary>
     public void ShareScreenshot(string subject, string text){
         StartCoroutine(TakeSSAndShare(subject, text));
     }
 
+    /// <summary>
+    /// Korutina koja uzima trenutni screenshot i shareuje ga nativno
+    /// </summary>
     private IEnumerator TakeSSAndShare(string subject, string text)
     {
         yield return new WaitForEndOfFrame();

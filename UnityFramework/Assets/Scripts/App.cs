@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pokega;
 
+/// <summary>
+/// Klasa koja sadrzi staticke reference ka svim bitnim komponentama
+/// koje igra koristi. Preko ove klase pristupamo svim ostalim komponentama frameworka
+/// </summary>
 public class App : MonoBehaviour {
 
     public static Player player;
@@ -15,6 +19,9 @@ public class App : MonoBehaviour {
     public static SocialControl social;
     public static ScoreControl score;
 
+    /// <summary>
+    /// Instancira se prazan Player objekat i dodeljuju reference za sve komponente
+    /// </summary>
     void Awake()
     {
         player = new Player();

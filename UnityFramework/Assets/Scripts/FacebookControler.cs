@@ -23,6 +23,9 @@ public class FacebookControler : MonoBehaviour {
     // Awake function from Unity's MonoBehavior
     void Awake()
     {
+        /// <summary>
+        /// Inicijalizacija facebooka
+        /// </summary>
         if (!FB.IsInitialized)
         {
             // Initialize the Facebook SDK
@@ -52,15 +55,23 @@ public class FacebookControler : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Funkcija koju treba pozvati pri kliku na facebook dugme
+    /// </summary>
     public void Login(){
         Debug.Log("Facebook login clicked");
 
+        /// <summary>
+        /// Odredjujemo permisije i pozivamo login funkciju
+        /// </summary>
         var perms = new List<string>() { "public_profile", "email", "user_friends" };
         FB.LogInWithReadPermissions(perms, AuthCallback);
 
     }
 
-
+    /// <summary>
+    /// Kolbek koji se aktivira pri loginu
+    /// </summary>
     private void AuthCallback(ILoginResult result)
     {
         if (FB.IsLoggedIn)
@@ -71,6 +82,10 @@ public class FacebookControler : MonoBehaviour {
             // Print current access token's User ID
             Debug.Log(aToken.UserId);
 
+            /// <summary>
+            /// Pozivamo funkciju koja moze da proveri jos nesto u vezi fbid-ja, ako je potrebno i pozove ConnectWithFacebook
+            /// funkciju u FirebaseControler-u
+            /// </summary>
             CheckFbid(aToken);
 
             // Print current access token's granted permissions
@@ -107,11 +122,16 @@ public class FacebookControler : MonoBehaviour {
         //    App.firebase.ConnectWithFacebook(token.TokenString);
         //}
 
-
+        /// <summary>
+        /// Pozivamo fb API da bismo uzeli podatke korisnika koji se logovao
+        /// </summary>
         FB.API("/me?fields=id,first_name,last_name,gender,email", HttpMethod.GET, GraphCallback);
         App.firebase.ConnectWithFacebook(token);
     }
 
+    /// <summary>
+    /// Uzimamo podatke za logovanog korisnika
+    /// </summary>
     private void GraphCallback(IGraphResult result)
     {
         Debug.Log("Facebook info callback : " + result.RawResult);
@@ -144,6 +164,9 @@ public class FacebookControler : MonoBehaviour {
     }
 
 
+    /// <summary>
+    /// Ovu funkciju mozemo koristiti ukoliko zelimo eksplicitni facebook share
+    /// </summary>
     public void Share(String uri){
         //uri should be like "https://developers.facebook.com/"
         Debug.Log("Facebook share clicked");
