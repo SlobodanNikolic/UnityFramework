@@ -14,7 +14,8 @@ public class FeatureTester : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyUp(KeyCode.P))
+            Debug.Log(App.player.ToString());
     }
 
     public void UIShop()
@@ -92,11 +93,12 @@ public class FeatureTester : MonoBehaviour
     }
 
     public void SetBestScore(){
-        App.score.SetAndSaveBestScore();
+        App.score.SetAndSaveBestScores();
     }
 
     public void Share(){
         App.social.ShareScreenshot("Great game!", "Gotta play this one, try it! " + "https://www.makonda.com");
     }
+
 
 }

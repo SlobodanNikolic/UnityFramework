@@ -6,7 +6,6 @@ using Firebase.Unity.Editor;
 using Firebase.Database;
 using Facebook;
 
-
 /// <summary>
 /// Controler class that encompasses all Firebase functionality,
 /// such as database, storage, push notifications
@@ -207,7 +206,9 @@ public class FirebaseControler : MonoBehaviour {
         if (App.player != null)
         {
             Debug.Log("Save function. Uid : " + App.player.uid);
+
             string json = JsonUtility.ToJson(App.player);
+            Debug.Log(json);
             dbReference.Child("users").Child(App.player.uid).SetRawJsonValueAsync(json)
                .ContinueWith(task =>
                {
@@ -265,16 +266,37 @@ public class FirebaseControler : MonoBehaviour {
                         }
                         else
                         {
+
                             Debug.Log("Uid from Load : " + snapshot.Child("uid").Value.ToString());
+                            Debug.Log(snapshot.HasChild("bestScoreNames"));
+                            Debug.Log(snapshot.Child("bestScoreNames").Value.ToString());
+
                             App.player.name = snapshot.Child("name").Value.ToString();
                             App.player.email = snapshot.Child("email").Value.ToString();
+
                             App.player.fbid = snapshot.Child("fbid").Value.ToString();
                             App.player.uid = snapshot.Child("uid").Value.ToString();
+                            App.player.timesPlayed = int.Parse(snapshot.Child("timesPlayed").Value.ToString());
+                            Debug.Log(snapshot.Child("bestScoreNames").Value.ToString());
+                            Debug.Log(snapshot.Child("bestScoreValues").Value.ToString());
+
+                            App.player.bestScoreNames = ListObjToString(snapshot.Child("bestScoreNames").Value as List<System.Object>);
+                            App.player.bestScoreValues = ListObjToString(snapshot.Child("bestScoreValues").Value as List<System.Object>);
+
+                            App.score.SetBestScoresFromFirebase(App.player.bestScoreNames, App.player.bestScoreValues);
                             App.localDB.Save();
                         }
                     }
                 });
         }
+    }
+
+    public List<string> ListObjToString(List<System.Object> list){
+        List<string> stringList = new List<string>();
+        foreach(System.Object obj in list){
+            stringList.Add(obj.ToString());
+        }
+        return stringList;
     }
 
     public void CreateNewDBUser(){
@@ -394,5 +416,8 @@ public class FirebaseControler : MonoBehaviour {
         });
     }
 
+    public void LogOut(){
+        auth.SignOut();
+    }
 
 }

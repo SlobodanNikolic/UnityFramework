@@ -12,6 +12,9 @@ public class LocalDBControler : MonoBehaviour {
     public string email;
     public string fbid;
     public string ads;
+    public int timesPlayed;
+    public List<string> bestScoreNames;
+    public List<string> bestScoreValues;
 
     // Use this for initialization
     void Start () {
@@ -28,6 +31,11 @@ public class LocalDBControler : MonoBehaviour {
         PlayerPrefs.SetString("email", App.player.email);
         PlayerPrefs.SetString("fbid", App.player.fbid);
         PlayerPrefs.SetString("ads", App.player.ads.ToString());
+        PlayerPrefs.SetInt("timesPlayed", App.player.timesPlayed);
+        string bestScoreNamesJSON = JsonUtility.ToJson(App.player.bestScoreNames);
+        PlayerPrefs.SetString("bestScoreNames", bestScoreNamesJSON);
+        string bestScoreValuesJSON = JsonUtility.ToJson(App.player.bestScoreValues);
+        PlayerPrefs.SetString("bestScoreValues", bestScoreValuesJSON);
 
     }
 
@@ -37,7 +45,9 @@ public class LocalDBControler : MonoBehaviour {
         email = PlayerPrefs.GetString("email", "");
         fbid = PlayerPrefs.GetString("fbid", "");
         ads = PlayerPrefs.GetString("ads", "");
-
+        timesPlayed = PlayerPrefs.GetInt("timesPlayed", 0);
+        bestScoreNames = JsonUtility.FromJson<List<string>>(PlayerPrefs.GetString("bestScoreNames", ""));
+        bestScoreValues = JsonUtility.FromJson<List<string>>(PlayerPrefs.GetString("bestScoreValues", ""));
     }
 
 }

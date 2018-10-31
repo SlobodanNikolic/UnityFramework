@@ -86,7 +86,7 @@ public class FacebookControler : MonoBehaviour {
     }
 
     public void CheckFbid(AccessToken token){
-        string localFbid = PlayerPrefs.GetString("fbid", "");
+        //string localFbid = PlayerPrefs.GetString("fbid", "");
         //if(localFbid == ""){
         //    //Nema fbid u player prefs
         //    //Napravi novog usera sa sign in with credentials, proveri da li postoji fbid u bazi
@@ -106,6 +106,9 @@ public class FacebookControler : MonoBehaviour {
         //    FB.API("/me?fields=id,first_name,last_name,gender,email", HttpMethod.GET, GraphCallback);
         //    App.firebase.ConnectWithFacebook(token.TokenString);
         //}
+
+
+        FB.API("/me?fields=id,first_name,last_name,gender,email", HttpMethod.GET, GraphCallback);
         App.firebase.ConnectWithFacebook(token);
     }
 
@@ -130,11 +133,11 @@ public class FacebookControler : MonoBehaviour {
         }
         if (result.ResultDictionary.TryGetValue("gender", out gender))
         {
-            App.player.gender = gender.ToString();
+            App.player.gender = gender;
         }
         if (result.ResultDictionary.TryGetValue("email", out email))
         {
-            App.player.email = email.ToString();
+            App.player.email = email;
         }
 
         App.firebase.Save();

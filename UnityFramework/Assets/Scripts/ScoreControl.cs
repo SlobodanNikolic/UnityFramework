@@ -36,7 +36,7 @@ namespace Pokega{
 		}
 
 		
-		public void SetAndSaveBestScore() {
+		public void SetAndSaveBestScores() {
 			Debug.Log("Checking and setting best scores");
 			for (int i=0; i<scores.Count; i++) 
 			{
@@ -46,11 +46,30 @@ namespace Pokega{
                     foreach(Text label in bestScores[i].scoreLabels){
                         label.text = (Crypting.DecryptInt2(bestScores[i].score)).ToString();
                     }
+                    AddBestScoreToPlayer(bestScores[i].scoreName, bestScores[i].score);
 				}
 			}
-			//OVDE TREBA PRVO DA SE POSALJU SKOROVI LOCAL DB-u i SERVER API-ju
+            //OVDE TREBA PRVO DA SE POSALJU SKOROVI LOCAL DB-u i SERVER API-ju
             //todo: Save na server i lokal
+            App.firebase.Save();
 		}
+
+
+
+        public void AddBestScoreToPlayer(string scoreName, string score){
+            bool inserted = false;
+            for (int i = 0; i < App.player.bestScoreNames.Count; i++){
+                if (App.player.bestScoreNames[i] == scoreName)
+                {
+                    App.player.bestScoreValues[i] = score;
+                    inserted = true;
+                }
+            }
+            if(!inserted){
+                App.player.bestScoreNames.Add(scoreName);
+                App.player.bestScoreValues.Add(score);
+            }
+        }
 
 		//Postavljanje vrednosti skora u odgovarajuce labele
 		public void SetScoreLabels(){
@@ -134,6 +153,16 @@ namespace Pokega{
 				Debug.Log(bestScores[i].scoreName + " " + bestScores[i].score);
 			}
 		}
+
+        public void SetBestScoresFromFirebase(List<string> bestScoreNames, List<string> bestScoreValues){
+            for (int i = 0; i < bestScoreNames.Count; i++){
+                for (int j = 0; i < bestScores.Count; j++){
+                    if(bestScoreNames[i] == bestScores[j].scoreName){
+                        bestScores[j].score = bestScoreValues[i];
+                    }
+                }
+            }
+        }
 
         public void ReportScore(int score, string leaderboardID)
         {
