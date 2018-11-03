@@ -4,13 +4,21 @@ using UnityEngine;
 using UnityEngine.Advertisements;
 using UnityEngine.Events;
 
-
+/// <summary>
+/// Klasa koja kontrolise UnityAds servis i prikazivanje reklama
+/// </summary>
 public class AdsControler : MonoBehaviour
 {
+    /// <summary>
+    /// Bool promenljive koje opisuju koje se reklame koriste i da li se koriste
+    /// </summary>
     public bool adsEnabled = true;
     public bool interstitialEnabled;
     public bool rewardedEnabled;
 
+    /// <summary>
+    /// Lista Eventova (funkcija) koji se pozivaju kada se odgleda rewarded reklama
+    /// </summary>
     public List<UnityEvent> rewardedEvents;
 
 
@@ -19,7 +27,9 @@ public class AdsControler : MonoBehaviour
 
     }
 
-
+    /// <summary>
+    /// Prikaz rewarded videa
+    /// </summary>
     public void ShowUnityAdsRewarded()
     {
         if (adsEnabled && rewardedEnabled)
@@ -34,6 +44,9 @@ public class AdsControler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Prikaz interstitial reklame (ona koja moze da se skipuje)
+    /// </summary>
     public void ShowUnityAdsInterstitial()
     {
         if (adsEnabled && interstitialEnabled)
@@ -47,6 +60,9 @@ public class AdsControler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Prikaz skippable videa
+    /// </summary>
     public void ShowUnityAdsSkippableVideo()
     {
        
@@ -63,10 +79,16 @@ public class AdsControler : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Kolbek koji se poziva nakon sto se zatvori rewarded video
+    /// </summary>
     private void RewardedShowResult(ShowResult result)
     {
         switch (result)
         {
+            /// <summary>
+            /// Odgledan do kraja
+            /// </summary>
             case ShowResult.Finished:
                 Debug.Log("The ad was successfully shown.");
                 foreach (UnityEvent e in rewardedEvents)
@@ -74,10 +96,16 @@ public class AdsControler : MonoBehaviour
                 //Nagradtiti igraca
 
                 break;
+            /// <summary>
+                /// Preskocen
+            /// </summary>
             case ShowResult.Skipped:
                 //TODO: Popup
                 Debug.Log("The ad was skipped before reaching the end.");
                 break;
+            /// <summary>
+                /// Prikazivanje nije uspelo
+            /// </summary>
             case ShowResult.Failed:
                 //todo: popup
                 Debug.LogError("The ad failed to be shown.");
@@ -85,6 +113,9 @@ public class AdsControler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Kolbek koji se aktivira nakon prikaza interstial reklame
+    /// </summary>
     private void InterstitialShowResult(ShowResult result)
     {
         switch (result)
@@ -102,6 +133,9 @@ public class AdsControler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Kolbek nakon zavrsetka video reklame
+    /// </summary>
     private void VideoShowResult(ShowResult result)
     {
         switch (result)

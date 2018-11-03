@@ -3,7 +3,10 @@ using System.Collections;
 
 namespace Pokega{
 
-	//Klasa koja se bavi kriptovanjem
+
+    /// <summary>
+    /// Klasa koja se bavi kriptovanjem
+    /// </summary>
 	public class Crypting : MonoBehaviour{
 	
 		public static int salt = 25;
@@ -13,8 +16,10 @@ namespace Pokega{
 			return (((num + salt) * salt) + salt).ToString();
 		}
 
-		//Kriptovanje inta
-		public static string EncryptInt2(int num) {
+        /// <summary>
+        ///Kriptovanje int vrednosti
+        /// </summary>
+        public static string EncryptInt2(int num) {
 			string encrypted = (((num + salt) * salt) + salt).ToString();
 			int sum = 0;
 			//Debug.Log ("E: Start encrypted num is " + encrypted);
@@ -44,7 +49,10 @@ namespace Pokega{
 			return encrypted2;
 		}
 
-		public static int DecryptInt2(string crypted){
+        /// <summary>
+        /// Dekriptovnje inta. Iza kriptovanog stringa u int
+        /// </summary>
+        public static int DecryptInt2(string crypted){
 			string randomNumLetter = (crypted[crypted.Length - 4] - 'a').ToString();
 			string checker = crypted.Substring (crypted.Length - 3);
 			int randomNumSeparator = int.Parse (randomNumLetter);
@@ -76,7 +84,10 @@ namespace Pokega{
 			else return realNum;
 		}
 
-		public static string EncryptString(string cleanString){
+        /// <summary>
+        /// Kriptovanje stringa u string
+        /// </summary>
+        public static string EncryptString(string cleanString){
 			int sum = 0;
 			string encrypted2 = "";
 			int randomNumOfSpaces = Random.Range (0, 0);
@@ -104,7 +115,10 @@ namespace Pokega{
 			return encrypted2;
 		}
 
-		public static string DecryptString(string crypted){
+        /// <summary>
+        /// Dekriptovanje stringa u string
+        /// </summary>
+        public static string DecryptString(string crypted){
 			string randomNumLetter = (crypted[crypted.Length - 4] - 'a').ToString();
 			string checker = crypted.Substring (crypted.Length - 3);
 			int randomNumSeparator = int.Parse (randomNumLetter);
@@ -136,11 +150,15 @@ namespace Pokega{
 			else return clean;
 		}
 
-		public static string Number2String(int number)
+        /// <summary>
+        /// Pomocne funkcije za prebacivanje broja u ascii karakter sa nekim offsetom
+        /// </summary>
+        public static string Number2String(int number)
 		{
 			char c = (char)(97 + (number));
 			return c.ToString();
 		}
+
 
 		public static int StringToNumber(string str){
 			char[] charArr = str.ToCharArray ();
@@ -148,7 +166,10 @@ namespace Pokega{
 			return int.Parse (num);
 		}
 
-		public static int DecryptInt(string num) {
+        /// <summary>
+        /// Ovo se ne koristi. Treba kori
+        /// </summary>
+        public static int DecryptInt(string num) {
 			if(num != null){
 				int n = System.Int32.Parse(num);
 				return (((n - salt) / salt) - salt);

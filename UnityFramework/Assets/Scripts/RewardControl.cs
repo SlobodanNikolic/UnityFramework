@@ -9,13 +9,9 @@ public class RewardControl : MonoBehaviour {
 
 
 	public GameObject rewardButton;
-	public float time1;
-	public float time2;
 	public int rewardAmount;
 	public int rewardCounter = 0;
-	public string rewardDate;
 	public int startRewardAmount;
-	public Text coinsAmountLabel;
 	public static RewardControl instance;
 
 	void Awake(){
@@ -28,10 +24,13 @@ public class RewardControl : MonoBehaviour {
 	void Start () {
 		if (PlayerPrefs.GetString ("timer") == "")
 		{
-			if (App.player.timesPlayed > 0) {
-				Debug.Log ("==> Enabling button");
-				enableButton ();
-			}
+
+            /// <summary>
+            /// Treba odluciti kada ce da se prvi put pozove enable button
+            /// </summary>
+            Debug.Log ("==> Enabling button");
+			enableButton ();
+			
 		} else 
 		{
 			disableButton ();

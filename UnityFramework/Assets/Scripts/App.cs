@@ -18,6 +18,7 @@ public class App : MonoBehaviour {
     public static AdsControler ads;
     public static SocialControl social;
     public static ScoreControl score;
+    public static RewardControl gift;
 
     /// <summary>
     /// Instancira se prazan Player objekat i dodeljuju reference za sve komponente
@@ -33,6 +34,7 @@ public class App : MonoBehaviour {
         purchaser = GameObject.Find("Purchaser").GetComponent<Purchaser>();
         social = GameObject.Find("SocialControler").GetComponent<SocialControl>();
         score = GameObject.Find("ScoreControler").GetComponent<ScoreControl>();
+        //gift = GameObject.Find("RewardControler").GetComponent<RewardControl>();
     }
 
     // Use this for initialization

@@ -8,6 +8,16 @@ using UnityEngine;
 public class FeatureTester : MonoBehaviour
 {
 
+    public bool resetPlayerPrefs;
+
+    private void Awake()
+    {
+        if(resetPlayerPrefs){
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+        }
+
+    }
     // Use this for initialization
     void Start()
     {
@@ -19,6 +29,10 @@ public class FeatureTester : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.P))
             Debug.Log(App.player.ToString());
+        if(Input.GetKeyUp(KeyCode.R)){
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+        }
     }
 
     /// <summary>
@@ -135,9 +149,17 @@ public class FeatureTester : MonoBehaviour
         App.score.SetAndSaveBestScores();
     }
 
+
     public void Share(){
         App.social.ShareScreenshot("Great game!", "Gotta play this one, try it! " + "https://www.makonda.com");
     }
 
+    public void OpenGift(){
+        App.gift.OpenRewardScreen();
+        //Ova funkcija je zaduzena za pokretanje tajmera, itd.
+        //Zvati je kada se collectuje nagrada, ne samo kada se otvori
+        //gift screen
+        App.gift.rewardClicked();
+    }
 
 }

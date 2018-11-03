@@ -30,7 +30,8 @@ public class TimeManager : MonoBehaviour {
 	void Awake() {
 		if (sharedInstance == null) {
 			sharedInstance = this;
-		} else if (sharedInstance != this) {
+		}
+        else if (sharedInstance != this) {
 			Destroy (gameObject);  
 		}
 	}
@@ -87,8 +88,8 @@ public class TimeManager : MonoBehaviour {
 	//get the current time at startup
 	void Start()
 	{
-		Debug.Log ("TimeManager script is Ready.");
-		StartCoroutine ("getTime");
+		//Debug.Log ("TimeManager script is Ready.");
+		//StartCoroutine ("getTime");
 	}
 
 	//get the current date - also converting from string to int.
