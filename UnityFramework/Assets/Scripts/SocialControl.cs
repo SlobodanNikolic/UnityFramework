@@ -4,7 +4,7 @@ using UnityEngine;
 using Pokega;
 using UnityEngine.SocialPlatforms;
 using System.IO;
-//using GooglePlayGames;
+using GooglePlayGames;
 
 /// <summary>
 /// Kontroler koji je zaduzen za Google Play i Game Center Achievements, Leaderboards,
@@ -21,9 +21,13 @@ public class SocialControl : MonoBehaviour {
 
     void Start()
     {
-        //PlayGamesPlatform.Activate();
+        PlayGamesPlatform.DebugLogEnabled = true;
+        PlayGamesPlatform.Activate();
         // Authenticate and register a ProcessAuthentication callback
         // This call needs to be made before we can proceed to other calls in the Social API
+    }
+
+    public void Authenticate(){
         Social.localUser.Authenticate(ProcessAuthentication);
     }
 

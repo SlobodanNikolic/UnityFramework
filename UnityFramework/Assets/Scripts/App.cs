@@ -34,7 +34,7 @@ public class App : MonoBehaviour {
         purchaser = GameObject.Find("Purchaser").GetComponent<Purchaser>();
         social = GameObject.Find("SocialControler").GetComponent<SocialControl>();
         score = GameObject.Find("ScoreControler").GetComponent<ScoreControl>();
-        //gift = GameObject.Find("RewardControler").GetComponent<RewardControl>();
+        gift = GameObject.Find("RewardControler").GetComponent<RewardControl>();
     }
 
     // Use this for initialization

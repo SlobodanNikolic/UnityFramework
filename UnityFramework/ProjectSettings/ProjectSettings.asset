@@ -157,7 +157,7 @@ PlayerSettings:
     iOS: com.makonda.spaceblaster
   buildNumber:
     iOS: 1
-  AndroidBundleVersionCode: 104
+  AndroidBundleVersionCode: 203
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
