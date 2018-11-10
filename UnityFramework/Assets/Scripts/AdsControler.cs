@@ -183,7 +183,7 @@ public class AdsControler : MonoBehaviour
     public void RequestAdMobInterstitial()
     {
 #if UNITY_ANDROID
-        string adUnitId = "ca-app-pub-3405361179188325/5278321267";
+        string adUnitId = AdMobInterIdAndTEST;
 #elif UNITY_IPHONE
         string adUnitId = AdMobInterIdiOSTEST;
 #else
