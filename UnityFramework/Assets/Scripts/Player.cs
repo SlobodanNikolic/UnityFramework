@@ -59,7 +59,7 @@ public class Player{
             "TimesPlayed: " + timesPlayed + "; " + "Best scores: ";
 
         for (int i = 0; i < bestScoreNames.Count; i++){
-            print += bestScoreNames[i] + ": " + Pokega.Crypting.DecryptInt (bestScoreValues[i]) + ";";
+            print += bestScoreNames[i] + ": " + Crypting.DecryptInt (bestScoreValues[i]) + ";";
         }
 
         return print;

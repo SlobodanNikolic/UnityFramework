@@ -8,27 +8,45 @@ using UnityEngine.Purchasing;
 // one of the existing Survival Shooter scripts.
 
 // Deriving the Purchaser class from IStoreListener enables it to receive messages from Unity Purchasing.
+/// <summary>
+/// Klasa zaduzena za kupovinu in-app purchasa na iOSu
+/// </summary>
 public class Purchaser : MonoBehaviour, IStoreListener
 {
+    /// <summary>
+    /// Lista id-jeva consumable proizvoda sa itunesconnect.com
+    /// </summary>
     public List<string> consumableIds;
+    /// <summary>
+    /// Lista akcija koje se izvrsavaju nakon svakog kupljenog consumable proizvoda
+    /// </summary>
     public List<UnityEvent> consumablePurchasedActions;
+    /// <summary>
+    /// Lista id-jeva non consumable proizvoda sa itunesconnect.com
+    /// </summary>
     public List<string> nonConsumableIds;
+    /// <summary>
+    /// Lista akcija koje se izvrsavaju nakon svakog kupljenog non consumable proizvoda
+    /// </summary>
     public List<UnityEvent> nonConsumablePurchasedActions;
 
 	private static IStoreController m_StoreController;          // The Unity Purchasing system.
 	private static IExtensionProvider m_StoreExtensionProvider; // The store-specific Purchasing subsystems.
-    
-	// Product identifiers for all products capable of being purchased: 
-	// "convenience" general identifiers for use with Purchasing, and their store-specific identifier 
-	// counterparts for use with and outside of Unity Purchasing. Define store-specific identifiers 
-	// also on each platform's publisher dashboard (iTunes Connect, Google Play Developer Console, etc.)
 
-	// General product identifiers for the consumable, non-consumable, and subscription products.
-	// Use these handles in the code to reference which product to purchase. Also use these values 
-	// when defining the Product Identifiers on the store. Except, for illustration purposes, the 
-	// kProductIDSubscription - it has custom Apple and Google identifiers. We declare their store-
-	// specific mapping to Unity Purchasing's AddProduct, below.
-	public static string kProductIDConsumable =    "consumable";   
+    // Product identifiers for all products capable of being purchased: 
+    // "convenience" general identifiers for use with Purchasing, and their store-specific identifier 
+    // counterparts for use with and outside of Unity Purchasing. Define store-specific identifiers 
+    // also on each platform's publisher dashboard (iTunes Connect, Google Play Developer Console, etc.)
+
+    // General product identifiers for the consumable, non-consumable, and subscription products.
+    // Use these handles in the code to reference which product to purchase. Also use these values 
+    // when defining the Product Identifiers on the store. Except, for illustration purposes, the 
+    // kProductIDSubscription - it has custom Apple and Google identifiers. We declare their store-
+    // specific mapping to Unity Purchasing's AddProduct, below.
+    /// <summary>
+    /// Samo test vrednosti, ne obracati paznju na ovo
+    /// </summary>
+    public static string kProductIDConsumable =    "consumable";   
 	public static string kProductIDNonConsumable = "nonconsumable";
 	public static string kProductIDSubscription =  "subscription"; 
 
@@ -49,6 +67,9 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
 	}
 
+    /// <summary>
+    /// Inicijalizacija sistema za kupovinu
+    /// </summary>
 	public void InitializePurchasing() 
 	{
 		// If we have already connected to Purchasing ...
@@ -64,11 +85,14 @@ public class Purchaser : MonoBehaviour, IStoreListener
 		// Add a product to sell / restore by way of its identifier, associating the general identifier
 		// with its store-specific identifiers.
 		builder.AddProduct(kProductIDConsumable, ProductType.Consumable);
-		//builder.AddProduct (smallPackId, ProductType.Consumable);
-		//builder.AddProduct (mediumPackId, ProductType.Consumable);
-		//builder.AddProduct (bigPackId, ProductType.Consumable);
+        //builder.AddProduct (smallPackId, ProductType.Consumable);
+        //builder.AddProduct (mediumPackId, ProductType.Consumable);
+        //builder.AddProduct (bigPackId, ProductType.Consumable);
 
-        foreach(string id in consumableIds){
+        /// <summary>
+        /// Svaki od proizvoda mora da se "prijavi" pri inicijalizaciji i doda u builder
+        /// </summary>
+        foreach (string id in consumableIds){
             builder.AddProduct(id, ProductType.Consumable);
         }
 
@@ -77,7 +101,9 @@ public class Purchaser : MonoBehaviour, IStoreListener
             builder.AddProduct(id, ProductType.NonConsumable);
         }
 
-
+        /// <summary>
+        /// Ovo je testna vrednost
+        /// </summary>
         // Continue adding the non-consumable product.
         builder.AddProduct(kProductIDNonConsumable, ProductType.NonConsumable);
 
@@ -92,7 +118,8 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
 		// Kick off the remainder of the set-up with an asynchrounous call, passing the configuration 
 		// and this class' instance. Expect a response either in OnInitialized or OnInitializeFailed.
-		UnityPurchasing.Initialize(this, builder);
+		
+        UnityPurchasing.Initialize(this, builder);
 	}
 
 
@@ -102,21 +129,28 @@ public class Purchaser : MonoBehaviour, IStoreListener
 		return m_StoreController != null && m_StoreExtensionProvider != null;
 	}
 
-
+    /// <summary>
+    /// Pomocna funkcija za kupovinu consumable po indeksu
+    /// </summary>
     public void BuyConsumableByIndex(int index){
         BuyProductID(consumableIds[index]);
     }
 
-	
 
-	public void BuyNonConsumableByIndex(int index)
+    /// <summary>
+    /// Pomocna funkcija za kupovinu non consumable po indeksu
+    /// </summary>
+    public void BuyNonConsumableByIndex(int index)
 	{
         // Buy the non-consumable product using its general identifier. Expect a response either 
         // through ProcessPurchase or OnPurchaseFailed asynchronously.
         BuyProductID(nonConsumableIds[index]);
     }
 
-
+    /// <summary>
+    /// Neimplementirane stvari, ali pod komentarima je preporuka sta treba uraditi.
+    /// Ovu funkciju zvati ako se dugo ne dobije kolbek o uspesnoj ili neuspesnoj kupovini
+    /// </summary>
 	public void CheckForPurchaseDelay(){
   //      if (App.ui.currentPopUp.name == "UIWaitPurchase") {
 		//	App.ui.SetPopUp ("UIWaitPurchase", true);
@@ -133,7 +167,9 @@ public class Purchaser : MonoBehaviour, IStoreListener
 		BuyProductID(kProductIDSubscription);
 	}
 
-
+    /// <summary>
+    /// Funkcija za kupovinu itema po id-ju
+    /// </summary>
 	void BuyProductID(string productId)
 	{
 		//App.ui.SetPopUp ("UIWaitPurchase");
@@ -181,9 +217,12 @@ public class Purchaser : MonoBehaviour, IStoreListener
 	}
 
 
-	// Restore purchases previously made by this customer. Some platforms automatically restore purchases, like Google. 
-	// Apple currently requires explicit purchase restoration for IAP, conditionally displaying a password prompt.
-	public void RestorePurchases()
+    // Restore purchases previously made by this customer. Some platforms automatically restore purchases, like Google. 
+    // Apple currently requires explicit purchase restoration for IAP, conditionally displaying a password prompt.
+    /// <summary>
+    /// Funkcija koja se zove pri kliku na restore dugme
+    /// </summary>
+    public void RestorePurchases()
 	{
 		// If Purchasing has not yet been set up ...
 		if (!IsInitialized())
@@ -272,13 +311,18 @@ public class Purchaser : MonoBehaviour, IStoreListener
 		Debug.Log("OnInitializeFailed InitializationFailureReason:" + error);
 	}
 
-
+    /// <summary>
+    /// Funkcija koja se zove nakon uspesne kupovine
+    /// </summary>
 	public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args) 
 	{
+        /// <summary>
+        /// Ovde treba ugasiti popup za wait purchase
+        /// </summary>
         //App.ui.SetPopUp("UIWaitPurchase", false);
 
-		// A consumable product has been purchased by this user.
-		if (String.Equals(args.purchasedProduct.definition.id, kProductIDConsumable, StringComparison.Ordinal))
+        // A consumable product has been purchased by this user.
+        if (String.Equals(args.purchasedProduct.definition.id, kProductIDConsumable, StringComparison.Ordinal))
 		{
 			Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
             // The consumable item has been successfully purchased, add 100 coins to the player's in-game score.
@@ -341,7 +385,9 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
     }
 
-
+    /// <summary>
+    /// Funkcija koja se zove nakon neuspesne kupovine
+    /// </summary>
 	public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
 	{
 		// A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing 

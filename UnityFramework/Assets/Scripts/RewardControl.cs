@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Pokega;
 
 public class RewardControl : MonoBehaviour {
 
@@ -26,7 +25,9 @@ public class RewardControl : MonoBehaviour {
 		{
 
             /// <summary>
-            /// Treba odluciti kada ce da se prvi put pozove enable button
+            /// Treba odluciti kada ce da se prvi put pozove enable button,
+            ///da li odmah po ulasku u igricu ili ako je broj odigranih partija > 0
+            /// (bolje tako, po mom misljenju)
             /// </summary>
             Debug.Log ("==> Enabling button");
 			enableButton ();
@@ -52,9 +53,13 @@ public class RewardControl : MonoBehaviour {
 
 		//GiveReward and play sound
 	}
-    
 
-	public void OpenRewardScreen(){
+
+    /// <summary>
+    /// Funkcija koja se poziva kada se klikne na nagradu i otvori se skrin
+    /// na kome pise kolika bi nagrada trebala da bude
+    /// </summary>
+    public void OpenRewardScreen(){
 
 		//Check how much the reward should be
 		DateTime lastCollectionDate = DateTime.MinValue;

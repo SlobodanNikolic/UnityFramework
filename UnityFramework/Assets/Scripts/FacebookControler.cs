@@ -5,6 +5,9 @@ using UnityEngine;
 using Facebook.Unity;
 using System;
 
+/// <summary>
+/// Klasa zaduzena za facebook login i autentifikaciju
+/// </summary>
 public class FacebookControler : MonoBehaviour {
 
 	// Use this for initialization
@@ -16,7 +19,6 @@ public class FacebookControler : MonoBehaviour {
 	void Update () {
 		
 	}
-
 
    
 
@@ -81,6 +83,7 @@ public class FacebookControler : MonoBehaviour {
             var aToken = Facebook.Unity.AccessToken.CurrentAccessToken;
             // Print current access token's User ID
             Debug.Log(aToken.UserId);
+            App.player.fbid = aToken.UserId;
 
             /// <summary>
             /// Pozivamo funkciju koja moze da proveri jos nesto u vezi fbid-ja, ako je potrebno i pozove ConnectWithFacebook
@@ -101,27 +104,7 @@ public class FacebookControler : MonoBehaviour {
     }
 
     public void CheckFbid(AccessToken token){
-        //string localFbid = PlayerPrefs.GetString("fbid", "");
-        //if(localFbid == ""){
-        //    //Nema fbid u player prefs
-        //    //Napravi novog usera sa sign in with credentials, proveri da li postoji fbid u bazi
-        //    //Ako postoji, ucitaj podatke sa njega
-        //    //Ako ne postoji, napravi novog usera u bazi i ubaci fbid u podatke
-
-        //}
-        //else{
-        //    if(localFbid == token.UserId){
-        //        //To je isti user koji postoji u lokalu, samo ucitaj podatke iz zapisa sa tim fbid
-
-        //    }
-        //    else{
-        //        //Ako je razlicit facebook, 
-        //    }
-        //    App.player.fbid = token.UserId;
-        //    FB.API("/me?fields=id,first_name,last_name,gender,email", HttpMethod.GET, GraphCallback);
-        //    App.firebase.ConnectWithFacebook(token.TokenString);
-        //}
-
+   
         /// <summary>
         /// Pozivamo fb API da bismo uzeli podatke korisnika koji se logovao
         /// </summary>
@@ -140,6 +123,7 @@ public class FacebookControler : MonoBehaviour {
         string lastname;
         string gender;
         string email;
+        string fbid;
         App.player.name = "";
         App.player.gender = "";
 

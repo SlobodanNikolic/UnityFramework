@@ -1,21 +1,16 @@
 using UnityEngine;
 using System.Collections;
-//using GameAnalyticsSDK;
 using System.Collections.Generic;
-//using Facebook.MiniJSON;
-//Edit StefAN
-//using GooglePlayGames;
+
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 
-namespace Pokega{
 
 	public class ScoreControl : MonoBehaviour {
 
 		//Lista skorova
 		public List<Score> scores;
 		public List<Score> bestScores;	
-		public List<Score> totalScores;	
 
 		void Awake(){
 			InitializeScoresToZero();
@@ -197,4 +192,3 @@ namespace Pokega{
         }
 
     }
-}

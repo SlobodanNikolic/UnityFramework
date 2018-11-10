@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Pokega;
 using UnityEngine.SocialPlatforms;
 using System.IO;
 using GooglePlayGames;
@@ -21,10 +20,14 @@ public class SocialControl : MonoBehaviour {
 
     void Start()
     {
+#if UNITY_ANDROID
         PlayGamesPlatform.DebugLogEnabled = true;
         PlayGamesPlatform.Activate();
+#endif
+
         // Authenticate and register a ProcessAuthentication callback
         // This call needs to be made before we can proceed to other calls in the Social API
+        Authenticate();
     }
 
     public void Authenticate(){

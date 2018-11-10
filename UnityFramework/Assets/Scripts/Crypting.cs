@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Pokega{
 
 
     /// <summary>
@@ -167,7 +166,7 @@ namespace Pokega{
 		}
 
         /// <summary>
-        /// Ovo se ne koristi. Treba kori
+        /// Ovo se ne koristi. Treba koristiti funkciju DecryptInt2
         /// </summary>
         public static int DecryptInt(string num) {
 			if(num != null){
@@ -191,4 +190,3 @@ namespace Pokega{
 		}
 
 	}
-}

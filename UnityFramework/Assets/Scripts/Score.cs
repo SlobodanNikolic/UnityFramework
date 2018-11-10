@@ -3,28 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-namespace Pokega{
 	
 [System.Serializable]
-
+    /// <summary>
+    /// Klasa koja opisuje score. Cine je ime skora i string koji predstavlja
+    /// kriptovanu vrednost skora.
+    /// </summary>
 	public class Score{
-	
-		public string scoreName;
 
-		//Kriptovani skor
-		public string score;
+        /// <summary>
+        /// Ime skora
+        /// </summary>
+        public string scoreName;
 
-		//Lista labela u kojima se prikazuje skor
-		public List<Text> scoreLabels;
+        /// <summary>
+        /// Kriptovani skor
+        /// </summary>
+        public string score;
 
-		public Score(int sc){
+        /// <summary>
+        /// Lista UI labela u kojima se prikazuje trenutni skor
+        /// </summary>
+        public List<Text> scoreLabels;
+
+        /// <summary>
+        /// Konstruktor koji kriptuje datu int vrednost i postavlja skor
+        /// </summary>
+        public Score(int sc){
 			score = Crypting.EncryptInt2(sc);
 		}
 
-		public Score(string name, int sc, bool isItFloat){
-			score = Crypting.EncryptInt2(sc);
-			scoreName = name;
-		}
 
 	}
-}

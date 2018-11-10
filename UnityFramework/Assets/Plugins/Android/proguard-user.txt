@@ -20,6 +20,8 @@
    public *;
 }
 
+-keep class com.yasirkula.unity.* { *; }
+
 
 
 -keepattributes *Annotation*

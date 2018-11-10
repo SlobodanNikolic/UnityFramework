@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Pokega;
 
 /// <summary>
 /// Klasa koja sadrzi staticke reference ka svim bitnim komponentama
@@ -39,8 +38,8 @@ public class App : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		
-	}
+  
+    }
 	
 	// Update is called once per frame
 	void Update () {

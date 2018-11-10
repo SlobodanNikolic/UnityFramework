@@ -29,7 +29,7 @@ public class FirebaseControler : MonoBehaviour {
     /// </summary>
     public string editorP12FileName;
     /// <summary>
-    /// The editor service account email. Email of the account used to simulate use logins.
+    /// The editor service account email. Email of the account used to simulate logins.
     /// The same is for the password.
     /// </summary>
     public string editorServiceAccountEmail;
@@ -86,8 +86,7 @@ public class FirebaseControler : MonoBehaviour {
         Debug.Log(auth.CurrentUser);
         Debug.Log(user);
 
-        //TODO: dodati mozda proveru da li postoji uid u player prefs?
-        //odnosno fbid ili mail (uid) i pass (auto)
+
         /// <summary>
         /// Ako je prvo pokretanje na uredjaju
         /// </summary>
@@ -105,7 +104,6 @@ public class FirebaseControler : MonoBehaviour {
                 Debug.Log("Local user: " + user.UserId);
             }
 
-            //TODO: ovo nesto ne valja
             bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
             if (!signedIn && user != null) {
               Debug.Log("Signed out " + user.UserId);
@@ -149,7 +147,6 @@ public class FirebaseControler : MonoBehaviour {
                     user = task.Result;
                     App.player.uid = user.UserId;
                     Debug.Log("Signing in anonimously: Completed. UID: " + App.player.uid);
-                    //CreateNewDBUser();
                     //Samo treba u Auth state changed zvati load, koji ako nema tog korisnika, pravi novog u bazi
                 }
 
