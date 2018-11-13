@@ -24,16 +24,24 @@ public class AdsControler : MonoBehaviour
     public List<UnityEvent> rewardedEvents;
 
     /// <summary>
-    /// AdMob reklame - promenljive
+    /// AdMob reklame - promenljive. InterstitialAd i RewardBasedVideoAd cuvaju reference na 
+    /// odgovarajuce reklame
     /// </summary>
     private InterstitialAd interstitial;
     private RewardBasedVideoAd rewardBasedVideo;
 
+    /// <summary>
+    /// Id-jevi za interstitial i rewarded za admob, obe platforme
+    /// </summary>
     public string AdMobInterIdiOS;
     public string AdMobInterIdAnd;
     public string AdMobRewardedIdiOS;
     public string AdMobRewardedIdAnd;
 
+    /// <summary>
+    /// Test id-jevi. Dok se ne dodje pred publish, testirati sa ovim id-jevima.
+    /// Pred publish, umesto ovih, kasnije u kodu, koristiti ove iznad.
+    /// </summary>
     public string AdMobInterIdiOSTEST = "ca-app-pub-3940256099942544/4411468910";
     public string AdMobInterIdAndTEST = "ca-app-pub-3940256099942544/1033173712";
     public string AdMobRewardedIdiOSTEST = "ca-app-pub-3940256099942544/1712485313";
@@ -201,6 +209,12 @@ public class AdsControler : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Interstitial mora da se requestuje. Svaki put kada se odgleda,
+    /// objekat se unistava i mora da se zove opet ova funkcija, koja ce dodeliti
+    /// novu referencu promenljivoj interstitial.
+    /// </summary>
     public void RequestAdMobInterstitial()
     {
 #if UNITY_ANDROID
@@ -234,6 +248,9 @@ public class AdsControler : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Prikaz reklame
+    /// </summary>
     public void ShowAdMobInterstitial(){
         Debug.Log("Show ad mob inter");
         if (this.interstitial.IsLoaded())
@@ -270,6 +287,9 @@ public class AdsControler : MonoBehaviour
         MonoBehaviour.print("HandleAdLeavingApplication event received");
     }
 
+    /// <summary>
+    /// Requestujemo rewarded video
+    /// </summary>
     private void RequestRewardBasedVideo()
     {
 #if UNITY_ANDROID
@@ -310,12 +330,19 @@ public class AdsControler : MonoBehaviour
         MonoBehaviour.print("HandleRewardBasedVideoStarted event received");
     }
 
+    /// <summary>
+    /// Zove se kada se rewarded zatvori. To moze biti posle uspesnog gledanja,
+    /// ili kada je reklama prekinuta.
+    /// </summary>
     public void HandleRewardBasedVideoClosed(object sender, EventArgs args)
     {
         MonoBehaviour.print("HandleRewardBasedVideoClosed event received");
         this.RequestRewardBasedVideo();
     }
 
+    /// <summary>
+    /// Zove se kada je reklama uspesno odgledana. Pokrecu se svi rewarded eventovi.
+    /// </summary>
     public void HandleRewardBasedVideoRewarded(object sender, Reward args)
     {
         Debug.Log("Rewarded video - reward player");
@@ -329,6 +356,9 @@ public class AdsControler : MonoBehaviour
         MonoBehaviour.print("HandleRewardBasedVideoLeftApplication event received");
     }
 
+    /// <summary>
+    /// Prikaz rewarded videa
+    /// </summary>
     public void ShowAdMobRewarded(){
         Debug.Log("Show ad mob rewarded video");
         if (rewardBasedVideo.IsLoaded())
